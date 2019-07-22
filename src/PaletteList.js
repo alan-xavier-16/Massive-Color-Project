@@ -12,12 +12,9 @@ class PaletteList extends Component {
     const { palettes } = this.props;
     return (
       <div className="PaletteList">
-        <MiniPalette />
         <h1>React Palette List</h1>
-        {palettes.map(p => (
-          <p>
-            <Link to={`/palette/${p.id}`}>{p.paletteName}</Link>
-          </p>
+        {palettes.map(palette => (
+          <MiniPalette {...palette} />
         ))}
       </div>
     );
