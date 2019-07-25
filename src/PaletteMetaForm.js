@@ -13,8 +13,10 @@ import "emoji-mart/css/emoji-mart.css";
 class PaletteMetaForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { open: true, newPaletteName: "" };
+    this.state = { stage: "form", newPaletteName: "" };
     this.handleChange = this.handleChange.bind(this);
+    this.showEmojiPicker = this.showEmojiPicker.bind(this);
+    this.savePalette = this.savePalette.bind(this);
   }
   // Handles form validation
   componentDidMount() {
@@ -30,6 +32,18 @@ class PaletteMetaForm extends Component {
       [evt.target.name]: evt.target.value
     });
   }
+  // Opens Emoji Picker dialog on Palette Name Close
+  showEmojiPicker() {
+    this.setState({ stage: "emoji" });
+  }
+  // Saves Palette with Unique name and Emoji
+  savePalette(emoji) {
+    const newPalette = {
+      paletteName: this.state.newPaletteName,
+      emoji: emoji.native
+    };
+    this.props.handleSubmit(newPalette);
+  }
   handleClickOpen = () => {
     this.setState({ open: true });
   };
@@ -37,46 +51,55 @@ class PaletteMetaForm extends Component {
     this.setState({ open: false });
   };
   render() {
-    const { newPaletteName } = this.state;
-    const { handleSubmit, hideForm } = this.props;
+    const { newPaletteName, stage } = this.state;
+    const { hideForm } = this.props;
     return (
-      <Dialog
-        open={this.state.open}
-        onClose={this.handleClose}
-        aria-labelledby="form-dialog-title"
-        onClose={hideForm}
-      >
-        <DialogTitle id="form-dialog-title">Choose a Palette Name</DialogTitle>
-        <ValidatorForm onSubmit={() => handleSubmit(newPaletteName)}>
-          <DialogContent>
-            <DialogContentText>
-              Please enter a name for your palette. Make sure it's unique!
-            </DialogContentText>
-            <Picker />
-            <TextValidator
-              label="Palette Name"
-              value={newPaletteName}
-              name="newPaletteName"
-              fullWidth
-              margin="normal"
-              onChange={this.handleChange}
-              validators={["required", "isPaletteNameUnique"]}
-              errorMessages={[
-                "Enter a palette name",
-                "Palette name must be unique"
-              ]}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={hideForm} color="primary">
-              Cancel
-            </Button>
-            <Button variant="contained" color="primary" type="submit">
-              Save Palette
-            </Button>
-          </DialogActions>
-        </ValidatorForm>
-      </Dialog>
+      <div>
+        <Dialog open={stage === "emoji"} onClose={hideForm}>
+          <DialogTitle id="form-dialog-title">
+            Choose a Palette Emoji
+          </DialogTitle>
+          <Picker title="Pick a Palette Emoji" onSelect={this.savePalette} />
+        </Dialog>
+        <Dialog
+          open={stage === "form"}
+          aria-labelledby="form-dialog-title"
+          onClose={hideForm}
+        >
+          <DialogTitle id="form-dialog-title">
+            Choose a Palette Name
+          </DialogTitle>
+          <ValidatorForm onSubmit={this.showEmojiPicker}>
+            <DialogContent>
+              <DialogContentText>
+                Please enter a name for your palette. Make sure it's unique!
+              </DialogContentText>
+
+              <TextValidator
+                label="Palette Name"
+                value={newPaletteName}
+                name="newPaletteName"
+                fullWidth
+                margin="normal"
+                onChange={this.handleChange}
+                validators={["required", "isPaletteNameUnique"]}
+                errorMessages={[
+                  "Enter a palette name",
+                  "Palette name must be unique"
+                ]}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={hideForm} color="primary">
+                Cancel
+              </Button>
+              <Button variant="contained" color="primary" type="submit">
+                Save Palette
+              </Button>
+            </DialogActions>
+          </ValidatorForm>
+        </Dialog>
+      </div>
     );
   }
 }
