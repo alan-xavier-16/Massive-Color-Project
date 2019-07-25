@@ -16,6 +16,7 @@ class PaletteFormNav extends Component {
     this.state = { newPaletteName: "" };
     this.handleChange = this.handleChange.bind(this);
   }
+  // Handles form validation
   componentDidMount() {
     ValidatorForm.addValidationRule("isPaletteNameUnique", value =>
       this.props.palettes.every(
