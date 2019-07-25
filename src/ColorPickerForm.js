@@ -57,11 +57,6 @@ class ColorPickerForm extends Component {
     ValidatorForm.addValidationRule("isColorUnique", () =>
       this.props.colors.every(({ color }) => color !== this.state.currentColor)
     );
-    ValidatorForm.addValidationRule("isPaletteNameUnique", value =>
-      this.props.palettes.every(
-        ({ paletteName }) => paletteName.toLowerCase() !== value.toLowerCase()
-      )
-    );
   }
   render() {
     const { paletteIsFull, classes } = this.props;
