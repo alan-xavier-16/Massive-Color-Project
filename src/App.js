@@ -14,6 +14,7 @@ class App extends Component {
     this.state = { palettes: savedPalettes || seedColors };
     this.savePalette = this.savePalette.bind(this);
     this.findPalette = this.findPalette.bind(this);
+    this.deletePalette = this.deletePalette.bind(this);
   }
   // Returns the specific palette to render based on the ID from the URL
   findPalette(id) {
@@ -30,11 +31,20 @@ class App extends Component {
       this.syncLocalStorage
     );
   }
-  // Saves  Palette to localStorage
+  // Saves Palette to localStorage
   syncLocalStorage() {
     window.localStorage.setItem(
       "palettes",
       JSON.stringify(this.state.palettes)
+    );
+  }
+  // Deletes a Palette based off of ID
+  deletePalette(id) {
+    this.setState(
+      st => ({
+        palettes: st.palettes.filter(palette => palette.id !== id)
+      }),
+      this.syncLocalStorage
     );
   }
   render() {
@@ -79,7 +89,11 @@ class App extends Component {
             exact
             path="/"
             render={routeProps => (
-              <PaletteList {...routeProps} palettes={this.state.palettes} />
+              <PaletteList
+                {...routeProps}
+                palettes={this.state.palettes}
+                deletePalette={this.deletePalette}
+              />
             )}
           />
         </Switch>
