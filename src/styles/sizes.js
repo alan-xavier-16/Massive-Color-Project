@@ -6,7 +6,8 @@ export default {
       xs: "576px", // Extra Small devices (576px and down)
       sm: "768px", // Small devices (768px and down)
       md: "992px", // Medium devices (992px and down)
-      lg: "1200px" // Large devices (1200px and down)
+      lg: "1200px", // Large devices (1200px and down)
+      xl: "1600px"
     };
     return `@media (max-width: ${sizes[size]})`;
   }
